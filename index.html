@@ -4,7 +4,7 @@
 
   <head>
 
-    <title>Puzzle</title>
+    <title>Головоломка</title>
 
    
 
@@ -12,7 +12,7 @@
 
   <body>
 
-    <h1 style="text-align: center; font-family: 'Helvetica Neue', sans-serif; font-size: 32px; padding: 20px;">Use arrows to move cubes</h1>
+    <h1 style="text-align: center; font-family: 'Helvetica Neue', sans-serif; font-size: 32px; padding: 20px;">Используйте стрелки для перемещения кубиков</h1>
 
 
 
@@ -462,7 +462,7 @@
 
         inputBox.setAttribute("max", "27");
 
-        inputBox.setAttribute("placeholder", "Enter a new grid size (number of columns)");
+        inputBox.setAttribute("placeholder", "Введите новый размер поля(нечётное число)");
 
         inputBox.style.display = "block";
 
@@ -484,7 +484,7 @@
 
             if (isNaN(newSize) || newSize < 5 || newSize > 27 || newSize%2==0) {
 
-                alert("Invalid board width. Please enter an odd number between 5 and 27.");
+                alert("Неверная ширина поля. Введите нечётное число от 5 до 27");
 
                 return;
 
@@ -536,7 +536,7 @@
 
         playMoves.setAttribute("string", "");
 
-        playMoves.setAttribute("placeholder", "Paste or type any sequence of LDRU and play the moves.");
+        playMoves.setAttribute("placeholder", "Впишите последовательность из символов LDRU, чтобы просимулировать ходы");
 
         playMoves.style.display = "block";
 
@@ -558,7 +558,7 @@
 
                 if(c!='L' && c!='U' && c!='D' && c!='R') {
 
-                    alert("Invalid button press sequence. Please enter a string with only L,R, U and D characters");
+                    alert("Неккоректная последовательность. Используйте только символы LDRU");
 
                     return;
 
