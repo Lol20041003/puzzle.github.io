@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <title>Puzzle</title>
+
+   
+
+  </head>
+
+  <body>
+
+    <h1 style="text-align: center; font-family: 'Helvetica Neue', sans-serif; font-size: 32px; padding: 20px;">Use arrows to move cubes</h1>
+
+
+
+    <script >let boardWidth = 7; // number of columns
+
+        const boardHeight = 2; // number of rows
+
+        
+
+        // create the board
+
+        let board = [];
+
+        
+
+        // create the board element
+
+        let boardDiv = null
+
+        const colorMap = {
+
+            A: '#ffcccc',
+
+            B: '#ffffcc',
+
+            C: '#ccffcc',
+
+            D: '#ccffff',
+
+            E: '#ccccff',
+
+            F: '#ffccff',
+
+            G: '#ff9999',
+
+            H: '#ffff99',
+
+            I: '#99ff99',
+
+            J: '#99ffff',
+
+            K: '#9999ff',
+
+            L: '#ff99ff',
+
+            M: '#ff6666',
+
+            N: '#ffff66',
+
+            O: '#66ff66',
+
+            P: '#66ffff',
+
+            Q: '#6666ff',
+
+            R: '#ff66ff',
+
+            S: '#ff3333',
+
+            T: '#ffff33',
+
+            U: '#33ff33',
+
+            V: '#33ffff',
+
+            W: '#3333ff',
+
+            X: '#ff33ff',
+
+            Y: '#ff0000',
+
+            Z: '#ffff00',
+
+            '#':'#000000',
+
+            ' ':'#ffffff'
+
+        };
+
+        function createBoard() {
+
+            // Remove the board if it already exists
+
+            if (boardDiv) {
+
+                while (boardDiv.firstChild) {
+
+                    boardDiv.removeChild(boardDiv.firstChild);
+
+                }
+
+            } else {
+
+                boardDiv = document.createElement("div");
+
+                document.body.appendChild(boardDiv)
+
+            }
+
+            board = [];
+
+        
+
+            for (let i = 0; i < boardHeight; i++) {
+
+                const row = [];
+
+                for (let j = 0; j < boardWidth; j++) {
+
+                    if (i === boardHeight - 1 && (j === 0 || j === boardWidth - 1 || j === Math.floor(boardWidth / 2))) {
+
+                        row.push("#"); // immovable object
+
+                    } else if (i == 0 && 1 <= j && j < boardWidth - 1) {
+
+                        row.push(String.fromCharCode(97 + j - 1)); // letters b, c, d, ...
+
+                    } else row.push(" "); // empty space
+
+                }
+
+                board.push(row);
+
+            }
+
+            
+
+            boardDiv.className = "board";
+
+                // Define the color map
+
+        
+
+            // add each cell to the board element
+
+            board.forEach((row) => {
+
+                const rowDiv = document.createElement("div");
+
+                rowDiv.className = "row";
+
+        
+
+                row.forEach((cell) => {
+
+                    const cellDiv = document.createElement("div");
+
+                    cellDiv.className = "cell";
+
+                    cellDiv.textContent = cell;
+
+                    rowDiv.appendChild(cellDiv);
+
+                    // Set the background color based on the letter in the cell
+
+                    const color = colorMap[cell.toUpperCase()];
+
+                    if (color) {
+
+                        cellDiv.style.backgroundColor = color;
+
+                    }
+
+                });
+
+        
+
+        
+
+                boardDiv.appendChild(rowDiv);
+
+            });
+
+        
+
+
+
+        
+
+            // add styling to the board and cells
+
+            const total = Math.min(5*boardWidth,75)
+
+            boardDiv.style.width = total+"vw";
+
+        
+
+            boardDiv.style.margin = "0 auto";
+
+            // boardDiv.style.border = "1px solid black";
+
+            boardDiv.style.textAlign = "center";
+
+            boardDiv.style.fontFamily = "Arial";
+
+        
+
+            let rowDivs = document.querySelectorAll(".row");
+
+            rowDivs.forEach((rowDiv, rowIndex) => {
+
+                rowDiv.style.display = "flex";
+
+                rowDiv.style.flexWrap = "nowrap";
+
+        
+
+                const cellDivs = rowDiv.querySelectorAll(".cell");
+
+                cellDivs.forEach((cellDiv, cellIndex) => {
+
+                    cellDiv.style.width = total/boardWidth+"vw";
+
+                    cellDiv.style.height = total/boardWidth+"vw";
+
+                    cellDiv.style.border = "2px solid black";
+
+                    cellDiv.style.color = "black";
+
+                    cellDiv.style.fontSize = total/boardWidth*0.7+"vw";
+
+                    cellDiv.style.fontWeight = "bold";
+
+                    cellDiv.style.display = "flex";
+
+                    cellDiv.style.alignItems = "center";
+
+                    cellDiv.style.justifyContent = "center";
+
+                });
+
+            });
+
+        }
+
+        createBoard();
+
+        
+
+        
+
+        // move the letters
+
+        let moved = false;
+
+        function up() {
+
+            for (let j = 0; j < boardWidth; j++) {
+
+                for (let i = 1; i < boardHeight; i++) {
+
+                    if (board[i][j] !== " " && board[i][j] !== "#" && board[i - 1][j] === " ") {
+
+                        board[i - 1][j] = board[i][j];
+
+                        board[i][j] = " ";
+
+                        moved = true;
+
+                    }
+
+                }
+
+            }
+
+        };
+
+        function down() {
+
+            for (let j = 0; j < boardWidth; j++) {
+
+                for (let i = boardHeight - 2; i >= 0; i--) {
+
+                    if (board[i][j] !== " " && board[i][j] !== "#" && board[i + 1][j] === " ") {
+
+                        board[i + 1][j] = board[i][j];
+
+                        board[i][j] = " ";
+
+                        moved = true;
+
+                    }
+
+                }
+
+            }  
+
+        };
+
+        function left() {
+
+            for (let i = 0; i < boardHeight; i++) {
+
+                for (let j = 1; j < boardWidth; j++) {
+
+                    if (board[i][j] !== " " && board[i][j] !== "#" && board[i][j - 1] === " ") {
+
+                        board[i][j - 1] = board[i][j];
+
+                        board[i][j] = " ";
+
+                        moved = true;
+
+                    }
+
+                }
+
+            }
+
+        };
+
+        function right() {
+
+            for (let i = 0; i < boardHeight; i++) {
+
+                for (let j = boardWidth - 2; j >= 0; j--) {
+
+                    if (board[i][j] !== " " && board[i][j] !== "#" && board[i][j + 1] === " ") {
+
+                        board[i][j + 1] = board[i][j];
+
+                        board[i][j] = " ";
+
+                        moved = true;
+
+                    }
+
+                }
+
+            }
+
+        };
+
+
+
+
+
+        document.addEventListener("keydown", (event) => {
+
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+
+                // Do nothing if the user is typing in a textbox
+
+                return;
+
+            }
+
+            moved=false
+
+            for (let rep = 0; rep < Math.max(boardWidth, boardHeight); rep++) {
+
+                switch (event.key) {
+
+                    case "ArrowLeft":
+
+                        left();
+
+                        break;
+
+                    case "ArrowRight":
+
+                        right();
+
+                        break;
+
+                    case "ArrowUp":
+
+                        up();
+
+                        break;
+
+                    case "ArrowDown":
+
+                        down()
+
+                        break;
+
+                }
+
+            }
+
+        
+
+        
+
+            if (moved) {
+
+                // update the display
+
+                for (let i = 0; i < boardHeight; i++) {
+
+                    for (let j = 0; j < boardWidth; j++) {
+
+                        const cellDiv = boardDiv.children[i].children[j];
+
+                        cellDiv.textContent = board[i][j];
+
+                        const color = colorMap[board[i][j].toUpperCase()];
+
+                        if (color) {
+
+                            cellDiv.style.backgroundColor = color;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        
+
+        // create reset button element
+
+        const resetButton = document.createElement("button");
+
+        resetButton.textContent = "Reset Grid and Change Size";
+
+        resetButton.style.color = "black";
+
+        resetButton.style.borderRadius = "5px";
+
+        resetButton.style.padding = "10px 20px";
+
+        resetButton.style.fontFamily = "Arial";
+
+        resetButton.style.fontSize = "16px";
+
+        resetButton.style.cursor = "pointer";
+
+        resetButton.style.display = "block";
+
+        resetButton.style.margin = "10px auto";
+
+        // add reset button to the document
+
+        boardDiv.insertAdjacentElement("afterend",resetButton);
+
+        const inputBox = document.createElement("input");
+
+        inputBox.setAttribute("type", "number");
+
+        inputBox.setAttribute("min", "5");
+
+        inputBox.setAttribute("max", "27");
+
+        inputBox.setAttribute("placeholder", "Enter a new grid size (number of columns)");
+
+        inputBox.style.display = "block";
+
+        inputBox.style.margin = "0 auto";
+
+        inputBox.style.fontSize = "18px";
+
+        inputBox.style.width = "20%";
+
+        resetButton.insertAdjacentElement("afterend", inputBox);
+
+        // reset the grid when the button is clicked
+
+        resetButton.addEventListener("click", () => {
+
+            // remove the current board element from the document
+
+            const newSize = parseInt(inputBox.value);
+
+            if (isNaN(newSize) || newSize < 5 || newSize > 27 || newSize%2==0) {
+
+                alert("Invalid board width. Please enter an odd number between 5 and 27.");
+
+                return;
+
+            }
+
+            // get new grid size from user input
+
+            
+
+            
+
+            // create the new board
+
+            boardWidth = newSize; // number of columns
+
+            createBoard();
+
+           
+
+        });
+
+        
+
+        const playButton = document.createElement("button");
+
+        playButton.textContent = "Simulate Sequence of Moves";
+
+        playButton.style.color = "black";
+
+        playButton.style.borderRadius = "5px";
+
+        playButton.style.padding = "10px 20px";
+
+        playButton.style.fontFamily = "Arial";
+
+        playButton.style.fontSize = "16px";
+
+        playButton.style.cursor = "pointer";
+
+        playButton.style.display = "block";
+
+        playButton.style.margin = "10px auto";
+
+        
+
+        inputBox.insertAdjacentElement("afterend",playButton);
+
+        const playMoves = document.createElement("input");
+
+        playMoves.setAttribute("string", "");
+
+        playMoves.setAttribute("placeholder", "Paste or type any sequence of LDRU and play the moves.");
+
+        playMoves.style.display = "block";
+
+        playMoves.style.margin = "0 auto";
+
+        playMoves.style.fontSize = "18px";
+
+        playMoves.style.width = "50%";
+
+        playButton.insertAdjacentElement("afterend", playMoves);
+
+        playButton.addEventListener("click", () => {
+
+            // remove the current board element from the document
+
+            const moves = playMoves.value;
+
+            for(const c of moves) {
+
+                if(c!='L' && c!='U' && c!='D' && c!='R') {
+
+                    alert("Invalid button press sequence. Please enter a string with only L,R, U and D characters");
+
+                    return;
+
+                }
+
+            }
+
+            createBoard();
+
+            
+
+            for(const c of moves) {
+
+                moved=false;
+
+                for (let rep = 0; rep < Math.max(boardWidth, boardHeight); rep++) {
+
+                    switch (c) {
+
+                        case 'L':
+
+                            left();
+
+                            break;
+
+                        case 'R':
+
+                            right();
+
+                            break;
+
+                        case 'U':
+
+                            up();
+
+                            break;
+
+                        case 'D':
+
+                            down()
+
+                            break;
+
+                    }
+
+                }
+
+                if (moved) {
+
+                    // update the display
+
+                    for (let i = 0; i < boardHeight; i++) {
+
+                        for (let j = 0; j < boardWidth; j++) {
+
+                            const cellDiv = boardDiv.children[i].children[j];
+
+                            cellDiv.textContent = board[i][j];
+
+                            const color = colorMap[board[i][j].toUpperCase()];
+
+                            if (color) {
+
+                                cellDiv.style.backgroundColor = color;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        </script>
+
+  <script>(function(){var js = "window['__CF$cv$params']={r:'845dafdd993f2beb',t:'MTcwNTMxNzE4MS4wOTMwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script></body>
+
+</html>
